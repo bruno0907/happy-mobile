@@ -1,17 +1,42 @@
-import React from 'react';
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native'
+import React, { useState } from 'react';
+import { Text, View, TouchableOpacity } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps'
 import { Feather } from '@expo/vector-icons'
 
 import mapMarker from '../../images/map-marker.png'
 
+import api from '../../services/api'
+
+import styles from './styles'
+
+interface OrphanageProps {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;  
+}
+
 export default function OrphanagesMap() {
+  const [orphanages, setOrphanages] = useState<OrphanageProps[]>([])
+
+  const orphanagesCount = orphanages.length
+
+  useFocusEffect(() => {
+    api.get('/')
+      .then(response => setOrphanages(response.data))
+      .catch(error => console.warn(error.message))
+
+  })
+
   const navigation = useNavigation()
 
-  const handleNavigateToOrphanageDetails = () => {
-    navigation.navigate('OrphanageDetails')
+  const handleNavigateToOrphanageDetails = (id: number) => {
+    navigation.navigate('OrphanageDetails', { id })
+  }
+  const handleNavigateToCreateOrphanage = () => {
+    navigation.navigate('SelectMapPosition')
   }
   
   return (
@@ -25,79 +50,35 @@ export default function OrphanagesMap() {
           latitudeDelta: 0.008,
           longitudeDelta: 0.008
         }}>
-          <Marker 
-            icon={mapMarker}
-            calloutAnchor={{
-              x: 2.7,
-              y: 0.8
-            }}
-            coordinate={{
-              latitude: -26.9905831,
-              longitude: -48.6288651,
-            }}
-          >
-            <Callout tooltip onPress={handleNavigateToOrphanageDetails}>
-              <View style={styles.calloutContainer}>
-                <Text style={styles.calloutText}>Nome do Orfanato</Text>
-              </View>
-            </Callout>
-          </Marker>
+          {
+            orphanages.map(orphanage => (
+              <Marker 
+                key={orphanage.id}
+                icon={mapMarker}
+                calloutAnchor={{
+                  x: 2.7,
+                  y: 0.8
+                }}
+                coordinate={{
+                  latitude: orphanage.latitude,
+                  longitude: orphanage.longitude,
+                }}
+              >
+                <Callout tooltip onPress={() => handleNavigateToOrphanageDetails(orphanage.id)}>
+                  <View style={styles.calloutContainer}>
+                    <Text style={styles.calloutText}>{orphanage.name}</Text>
+                  </View>
+                </Callout>
+              </Marker>
+            ))
+          }
         </MapView>
         <View style={styles.footer}>
-          <Text style={styles.footerText}>2 orfanatos encontrados</Text>
-          <TouchableOpacity style={styles.createOrphanageButton} onPress={() => console.warn('Create Ophanage Pressed')}>
+          <Text style={styles.footerText}>{orphanagesCount} orfanatos encontrados</Text>
+          <TouchableOpacity style={styles.createOrphanageButton} onPress={handleNavigateToCreateOrphanage}>
             <Feather name="plus" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-  calloutContainer:{
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    width: 160,
-    height: 46,
-    borderRadius: 16,
-    justifyContent: 'center',
-    paddingHorizontal: 16,    
-  },
-  calloutText: {
-    color: '#0089A5',
-    fontSize: 14,
-    fontFamily: 'Nunito700',
-  },
-  footer: {
-    position: 'absolute',
-    left: 24,
-    right: 24,
-    bottom: 32,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    height: 56,
-    paddingLeft: 24,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    elevation: 3,
-  },
-  footerText: {
-    color: '#8FA7B3',
-    fontFamily: 'Nunito700',
-  },
-  createOrphanageButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 20,
-    backgroundColor: '#15C3D6',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

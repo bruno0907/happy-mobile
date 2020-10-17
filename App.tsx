@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { AppLoading } from 'expo'
-
 import { useFonts } from 'expo-font'
 import { Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold } from '@expo-google-fonts/nunito'
+
+import Loading from './src/components/Loading'
 
 import Routes from './src/routes'
 
@@ -12,10 +12,10 @@ export default function App() {
     Nunito600: Nunito_600SemiBold, 
     Nunito700: Nunito_700Bold, 
     Nunito800: Nunito_800ExtraBold
-  })
+  })  
 
   if(!fontsLoaded )
-    return <AppLoading />
+    return <Loading />
 
   return (
     <Routes />
