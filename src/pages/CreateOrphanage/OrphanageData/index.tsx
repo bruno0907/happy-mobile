@@ -81,7 +81,7 @@ export default function OrphanageData() {
     } as any))  
 
     api.post('orphanages', data)
-      .then(() => navigation.navigate('OrphanagesMap'))
+      .then(() => navigation.navigate('SuccessPage'))
       .catch(error => {
         console.log(error.message)
         alert('Houve um erro ao fazer seu cadastro.')

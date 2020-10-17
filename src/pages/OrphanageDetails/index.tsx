@@ -11,7 +11,7 @@ import api from '../../services/api'
 
 import styles from './styles'
 
-import Loading from '../../components/Loading';
+import { AppLoading } from 'expo';
 
 interface OrphanageDetailsRouteParams {
   id: number;
@@ -48,7 +48,6 @@ export default function OrphanageDetails() {
       .catch(error => console.warn(error.message))
 
   }, [id])
-
   
   function handleWhatsappButton() {
     Linking.canOpenURL(`whatsapp://send?text=""`)
@@ -64,13 +63,11 @@ export default function OrphanageDetails() {
     
     function handleShowOnGoogleMapsButton() {
       const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&destination='
-
-      Linking.openURL(`${googleMapsLink}${orphanage?.latitude}, ${orphanage?.longitude}`)      
-
+      Linking.openURL(`${googleMapsLink}${orphanage?.latitude}, ${orphanage?.longitude}`)   
     }
 
   if(!orphanage){
-    return <Loading />
+    return <AppLoading />
   }
 
   return (

@@ -9,12 +9,12 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
   },
   calloutContainer:{
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: '#FFFFFF',
     width: 160,
     height: 46,
     borderRadius: 16,
     justifyContent: 'center',
-    paddingHorizontal: 16,    
+    paddingHorizontal: 16,     
   },
   calloutText: {
     color: '#0089A5',

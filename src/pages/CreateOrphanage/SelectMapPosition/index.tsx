@@ -1,17 +1,28 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
-import { RectButton } from 'react-native-gesture-handler';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
 import MapView, { MapEvent, Marker } from 'react-native-maps';
 
+import hand from '../../../images/Hand.png';
 import mapMarkerImg from '../../../images/map-marker.png';
 
 import styles from './styles'
 
+interface RouteLocationProps {
+  location: {
+    latitude: number;
+    longitude: number
+  }
+}
+
 export default function SelectMapPosition() {
   const navigation = useNavigation();
+  const route = useRoute()
+  const params = route.params as RouteLocationProps
 
+  const [showModal, setShowModal] = useState(true)
   const [position, setPosition] = useState(
     { latitude: 0, longitude: 0}
   )
@@ -24,12 +35,18 @@ export default function SelectMapPosition() {
     navigation.navigate('OrphanageData', { position });
   }
 
-  return (
-    <View style={styles.container}>
+  return (     
+    <View style={styles.container}>  
+      { showModal && 
+        <RectButton style={styles.modal} onPress={() => setShowModal(false)}>          
+          <Image source={hand} />        
+          <Text style={styles.modalText}>Toque no mapa para adicionar um orfanato</Text>
+        </RectButton> 
+      }   
       <MapView 
         initialRegion={{
-          latitude: -26.9905831,
-          longitude: -48.6288651,
+          latitude: params.location.latitude,
+          longitude: params.location.longitude,
           latitudeDelta: 0.008,
           longitudeDelta: 0.008,
         }}

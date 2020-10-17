@@ -28,6 +28,27 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito800',
     fontSize: 16,
     color: '#FFF',
+  },
+
+  modal: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,        
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(21, 182, 214, 0.8)',
+    position: 'absolute',
+    zIndex: 1,
+  },
+
+  modalText: {
+    fontFamily: 'Nunito700',
+    fontSize: 24,
+    lineHeight: 35,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    width: 203,
+    marginTop: 12,
+    marginBottom: 42
   }
 })
 
